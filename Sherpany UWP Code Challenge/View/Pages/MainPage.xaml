@@ -1,13 +1,16 @@
 ﻿<Page
-    x:Class="Sherpany_UWP_Code_Challenge.MainPageView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Sherpany_UWP_Code_Challenge"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ia="using:Microsoft.Xaml.Interactivity"
+    xmlns:iac="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:iam="using:Microsoft.Xaml.Interactions.Media"
+    x:Class="Sherpany_UWP_Code_Challenge.MainPageView"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    DataContext="{Binding MainPage, Source={StaticResource Locator}}">
+    >
     <Page.Resources>
         <Storyboard x:Name="CloseAppAnimation">
             <DoubleAnimation
@@ -16,14 +19,26 @@
                 From="1" To="0.0" Duration="0:0:2"/>
         </Storyboard>
     </Page.Resources>
+    <ia:Interaction.Behaviors>
+        <iac:DataTriggerBehavior Binding="{x:Bind VM.IsAppClosing, Mode=OneWay}" Value="True">
+            <iam:ControlStoryboardAction ControlStoryboardOption="Play" Storyboard="{StaticResource CloseAppAnimation}"/>
+        </iac:DataTriggerBehavior>
+    </ia:Interaction.Behaviors>
     <Grid>
         <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Height="200" Width="400" Padding="30,30">
-            <TextBlock VerticalAlignment="Top" Text="Set a six-digit passcode:"></TextBlock>
-            <TextBox MaxLength="6" VerticalAlignment="Top" PlaceholderText="123456" Height="30" Margin="0,30,0,0"></TextBox>
-            <Button Content="Navigate" VerticalAlignment="Top" Margin="0,70,0,0" HorizontalAlignment="Right"></Button>
+            <TextBlock VerticalAlignment="Top" Text="Set a six-digit passcode:"/>
+            <TextBox MaxLength="6" VerticalAlignment="Top" PlaceholderText="123456" Height="30" Margin="0,30,0,0"/>
+            <Button Content="Navigate" VerticalAlignment="Top" Margin="0,70,0,0" HorizontalAlignment="Right"/>
         </Grid>
         <Grid x:Name="DragableGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Background="White">
-            <Button Style="{StaticResource ButtonRevealStyle}" Height="200" Width="400" FontSize="80" x:Name="Button" Content="Press me" Tapped="ButtonTapped"></Button>
+            <Button
+                x:Name="Button"
+                Style="{StaticResource ButtonRevealStyle}"
+                Height="200" Width="400"
+                FontSize="80"
+                Content="Press me" 
+                Click="{x:Bind Path=VM.StartAppClose}"
+                />
         </Grid>
     </Grid>
 </Page>
