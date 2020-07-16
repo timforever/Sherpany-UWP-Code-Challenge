@@ -120,7 +120,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\LightInjectServiceLocation.cs" />
-    <Compile Include="Interfaces\EncryptionManager.cs" />
+    <Compile Include="Interfaces\IEncryptionManager.cs" />
     <Compile Include="Interfaces\IDialogServiceEx.cs" />
     <Compile Include="Interfaces\IDummyApiService.cs" />
     <Compile Include="Interfaces\IKeyManager.cs" />

@@ -12,6 +12,7 @@ using MetroLog;
 using Sherpany_UWP_Code_Challange.Interfaces;
 using Sherpany_UWP_Code_Challange.Services;
 using Sherpany_UWP_Code_Challange.View.Pages;
+using Sherpany_UWP_Code_Challange.ViewModel.Pages;
 using Sherpany_UWP_Code_Challenge.Interfaces;
 using Sherpany_UWP_Code_Challenge.Services;
 using Sherpany_UWP_Code_Challenge.View.Dialog;
@@ -38,9 +39,9 @@ namespace Sherpany_UWP_Code_Challenge.ViewModel
             ServiceLocator.SetLocatorProvider(() => new LightInjectServiceLocator(_container));
         }
 
-        //the new pages
-        public MainPageViewModel MainPage => ServiceLocator.Current.GetInstance<MainPageViewModel>();
-        public SherpanyValuesPageView ValuesPage => ServiceLocator.Current.GetInstance<SherpanyValuesPageView>();
+        // The view models
+        public MainPageViewModel MainViewModel => ServiceLocator.Current.GetInstance<MainPageViewModel>();
+        public SherpanyValuesPageViewModel ValuesPageViewModel => ServiceLocator.Current.GetInstance<SherpanyValuesPageViewModel>();
 
 
         private void RegisterServices()
@@ -51,13 +52,12 @@ namespace Sherpany_UWP_Code_Challenge.ViewModel
             _container.Register(f => CreateDialogService());
             _container.Register(f => LogManagerFactory.DefaultLogManager);
 
-            // Registration of the pages
+            // Registration of the view models.
             _container.Register<MainPageViewModel>();
-            _container.Register<SherpanyValuesPageView>();
+            _container.Register<SherpanyValuesPageViewModel>();
 
-            
 
-            //Services
+            // Services
             _container.Register<IDummyApiService, DummyApiService>();
             _container.Register<IKeyManager, KeyManager>();
             _container.Register<IEncryptionManager, UwpEncryptionManager>();
@@ -70,6 +70,7 @@ namespace Sherpany_UWP_Code_Challenge.ViewModel
 
             // New pages
             navigationService.Configure("MainPageView", typeof(MainPageView));
+            navigationService.Configure("SherpanyValuesPageView", typeof(SherpanyValuesPageView));
 
             return navigationService;
         }

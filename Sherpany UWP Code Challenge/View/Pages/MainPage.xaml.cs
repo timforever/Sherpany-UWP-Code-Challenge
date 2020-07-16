@@ -15,7 +15,7 @@ namespace Sherpany_UWP_Code_Challenge
         {
             InitializeComponent();
             var viewModelLocator = (ViewModelLocator) Application.Current.Resources["Locator"];
-            VM = viewModelLocator.MainPage;
+            VM = viewModelLocator.MainViewModel;
         }
 
         public MainPageViewModel VM { get; }

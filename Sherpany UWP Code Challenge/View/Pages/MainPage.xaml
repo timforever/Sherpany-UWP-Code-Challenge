@@ -27,14 +27,17 @@
     <Grid>
         <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Height="200" Width="400" Padding="30,30">
             <TextBlock VerticalAlignment="Top" Text="Set a six-digit passcode:"/>
-            <TextBox MaxLength="6" VerticalAlignment="Top" PlaceholderText="123456" Height="30" Margin="0,30,0,0"/>
-            <Button Content="Navigate" VerticalAlignment="Top" Margin="0,70,0,0" HorizontalAlignment="Right"/>
+            <TextBox MaxLength="6" VerticalAlignment="Top" PlaceholderText="123456" Height="30" Margin="0,30,0,0"
+                     Text="{x:Bind VM.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Content="Navigate" VerticalAlignment="Top" Margin="0,70,0,0" HorizontalAlignment="Right"
+                    Command="{x:Bind VM.SetPasswordAndNavigateCommand, Mode=OneWay}"
+                    CommandParameter="{x:Bind VM.Password, Mode=OneWay}"/>
         </Grid>
         <Grid x:Name="DragableGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Background="White"
               ManipulationMode="TranslateX,TranslateY"
               ManipulationStarted="OnManipulationStarted"
               ManipulationDelta="OnManipulationDelta"
-              ManipulationCompleted="OnManipulationCompleted"
+              ManipulationCompleted="OnManipulationCompleted" d:IsHidden="True"
               >
             <Grid.RenderTransform>
                 <CompositeTransform TranslateX="0" TranslateY="0"/>
@@ -48,5 +51,11 @@
                 Click="{x:Bind Path=VM.StartAppClose}"
                 />
         </Grid>
+        <Button
+            Content="Reset passcode"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="20"
+            Click="{x:Bind VM.ResetPassword}"/>
     </Grid>
 </Page>

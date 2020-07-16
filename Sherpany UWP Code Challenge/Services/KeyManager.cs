@@ -1,32 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using Windows.Security.Credentials;
 using Sherpany_UWP_Code_Challange.Interfaces;
 
 namespace Sherpany_UWP_Code_Challange.Services
 {
-    public class KeyManager: IKeyManager
+    public class KeyManager : IKeyManager
     {
+        private const string PWKey = "EncryptionKey";
+
         public string GetEncryptionKey(bool isDemoMode)
         {
-            throw new NotImplementedException();
+            if (isDemoMode) return "000000";
+
+            var pwVault = new PasswordVault();
+            var credentials = pwVault.FindAllByResource(PWKey);
+
+            var credential = credentials.First();
+            credential.RetrievePassword();
+            return credential.Password;
         }
 
         public void SetEncryptionKey(string key)
         {
-            throw new NotImplementedException();
+            DeleteEncryptionKey();
+            var pwVault = new PasswordVault();
+            pwVault.Add(new PasswordCredential(PWKey, "dummyname", key));
         }
 
         public bool DeleteEncryptionKey()
         {
-            throw new NotImplementedException();
+            if (!IsKeySet())
+                return false;
+
+            var pwVault = new PasswordVault();
+            var credentials = pwVault.FindAllByResource(PWKey);
+            foreach (var credential in credentials)
+            {
+                pwVault.Remove(credential);
+            }
+
+            return true;
         }
 
         public bool IsKeySet()
         {
-            throw new NotImplementedException();
+            var pwVault = new PasswordVault();
+            var all = pwVault.RetrieveAll();
+            return all.Any(c => c.Resource == PWKey);
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
+using Sherpany_UWP_Code_Challange.Interfaces;
 using Sherpany_UWP_Code_Challenge.Messages;
 
 namespace Sherpany_UWP_Code_Challenge.ViewModel.Pages
@@ -12,8 +14,10 @@ namespace Sherpany_UWP_Code_Challenge.ViewModel.Pages
     public class MainPageViewModel: ViewModelBase
     {
         private readonly INavigationService _navigationService;
-        
+        private readonly IKeyManager _keyManager;
+
         private bool _isAppClosing = false;
+        private string _password = "";
 
         public bool IsAppClosing
         {
@@ -21,9 +25,16 @@ namespace Sherpany_UWP_Code_Challenge.ViewModel.Pages
             private set => Set(ref _isAppClosing, value);
         }
 
-        public MainPageViewModel(INavigationService navigationService)
+        public string Password
+        {
+            get => _password;
+            set => Set(ref _password, value);
+        }
+
+        public MainPageViewModel(INavigationService navigationService, IKeyManager keyManager)
         {
             _navigationService = navigationService;
+            _keyManager = keyManager;
         }
 
         /// <summary>
@@ -40,18 +51,34 @@ namespace Sherpany_UWP_Code_Challenge.ViewModel.Pages
             Messenger.Default.Send(new CloseAppMessage());
         }
 
-        //TODO If no passcode is set in the vault, the user can enter one and will then be navigated to the DetailPageView
-        public ICommand SetPasswordAndNavigateCommand => new RelayCommand<string>(SetPasswordAndNavigate);
+        public void ResetPassword()
+        {
+            _keyManager.DeleteEncryptionKey();
+        }
+
+        // If no passcode is set in the vault, the user can enter one and will then be navigated to the DetailPageView
+        public ICommand SetPasswordAndNavigateCommand => new RelayCommand<string>(SetPasswordAndNavigate, ValidatePassword);
+
+        private static bool ValidatePassword(string password)
+        {
+            // Match for exactly 6 digits.
+            return Regex.IsMatch(password, @"^\d{6}$");
+        }
 
         private void SetPasswordAndNavigate(string password)
         {
-            throw new NotImplementedException();
+            if (!ValidatePassword(password))
+                return;
+
+            _keyManager.SetEncryptionKey(password);
+
+            _navigationService.NavigateTo("SherpanyValuesPageView");
         }
 
         //TODO If a passcode has already been stored, use this to validate and navigate
-        public ICommand ValidatePasswordAndNavigateCommand => new RelayCommand<string>(ValidatePasswordAndNavigate);
+        public ICommand VerifyPasswordAndNavigateCommand => new RelayCommand<string>(VerifyPasswordAndNavigate);
 
-        private void ValidatePasswordAndNavigate(string password)
+        private void VerifyPasswordAndNavigate(string password)
         {
             throw new NotImplementedException();
         }
