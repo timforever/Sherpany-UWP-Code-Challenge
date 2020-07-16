@@ -5,11 +5,52 @@
     xmlns:local="using:Sherpany_UWP_Code_Challange.View.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pages="using:Sherpany_UWP_Code_Challange.ViewModel.Pages"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    DataContext="{Binding ValuesPageViewModel, Source={StaticResource Locator}}">
+    DataContext="{Binding ValuesPageViewModel, Source={StaticResource Locator}}" d:DesignWidth="708" d:DesignHeight="503.5">
 
     <Grid>
-        <Button Content="Sync"></Button>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="40,20,40,40" Orientation="Horizontal">
+            <TextBlock
+                Text="Sherpany Values"
+                TextLineBounds="TrimToBaseline"
+                Style="{StaticResource ResourceKey=HeaderTextBlockStyle}" />
+            <ProgressRing
+                Margin="20,0,0,0"
+                VerticalAlignment="Bottom"
+                Width="25" Height="25"
+                IsActive="{x:Bind VM.IsLoading, Mode=OneWay}"/>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Button x:Name="SyncBtn" Content="Sync" HorizontalAlignment="Left" Margin="40,0,0,25"
+                    Click="{x:Bind VM.LoadSherpanyValues}"/>
+            <ListView
+                Grid.Row="1"
+                Margin="40,0,0,0"
+                HorizontalAlignment="Left"
+                MinWidth="200"
+                MaxWidth="650"
+                ItemsSource="{x:Bind VM.Values, Mode=OneWay}"
+                SelectionMode="Single" SelectionChanged="OnSelectionChanged">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="pages:SherpanyValueViewModel">
+                        <StackPanel Margin="20,10">
+                            <TextBlock Text="{x:Bind Title}" Style="{StaticResource SubtitleTextBlockStyle}" />
+                            <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap" Style="{StaticResource BodyTextBlockStyle}" Visibility="{x:Bind IsSelected, Mode=OneWay}" />
+                            <TextBlock Text="{x:Bind Claim}" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" FontSize="16" Visibility="{x:Bind IsSelected, Mode=OneWay}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
     </Grid>
 </Page>

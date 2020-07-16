@@ -1,30 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+using Sherpany_UWP_Code_Challange.ViewModel.Pages;
+using Sherpany_UWP_Code_Challenge.ViewModel;
 
 namespace Sherpany_UWP_Code_Challange.View.Pages
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// This page loads values from the DummyApiService.
     /// </summary>
     public sealed partial class SherpanyValuesPageView : Page
     {
         public SherpanyValuesPageView()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            var viewModelLocator = (ViewModelLocator) Application.Current.Resources["Locator"];
+            VM = viewModelLocator.ValuesPageViewModel;
+        }
+
+        public SherpanyValuesPageViewModel VM { get; }
+
+        private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach (var itemVm in e.RemovedItems.OfType<SherpanyValueViewModel>())
+            {
+                itemVm.IsSelected = false;
+            }
+
+            foreach (var itemVm in e.AddedItems.OfType<SherpanyValueViewModel>())
+            {
+                itemVm.IsSelected = true;
+            }
         }
     }
 }
