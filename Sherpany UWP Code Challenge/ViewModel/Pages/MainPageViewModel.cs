@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
@@ -31,6 +30,8 @@ namespace Sherpany_UWP_Code_Challenge.ViewModel.Pages
             set => Set(ref _password, value);
         }
 
+        public bool IsPasswordSet => _keyManager.IsKeySet();
+
         public MainPageViewModel(INavigationService navigationService, IKeyManager keyManager)
         {
             _navigationService = navigationService;
@@ -54,6 +55,7 @@ namespace Sherpany_UWP_Code_Challenge.ViewModel.Pages
         public void ResetPassword()
         {
             _keyManager.DeleteEncryptionKey();
+            RaisePropertyChanged(nameof(IsPasswordSet));
         }
 
         // If no passcode is set in the vault, the user can enter one and will then be navigated to the DetailPageView
@@ -75,12 +77,21 @@ namespace Sherpany_UWP_Code_Challenge.ViewModel.Pages
             _navigationService.NavigateTo("SherpanyValuesPageView");
         }
 
-        //TODO If a passcode has already been stored, use this to validate and navigate
-        public ICommand VerifyPasswordAndNavigateCommand => new RelayCommand<string>(VerifyPasswordAndNavigate);
+        // If a passcode has already been stored, use this to validate and navigate
+        public ICommand VerifyPasswordAndNavigateCommand => new RelayCommand<string>(VerifyPasswordAndNavigate, VerifyPassword);
+
+        private bool VerifyPassword(string password)
+        {
+            if (!ValidatePassword(password)) return false;
+
+            return IsPasswordSet && password == _keyManager.GetEncryptionKey(false);
+        }
 
         private void VerifyPasswordAndNavigate(string password)
         {
-            throw new NotImplementedException();
+            if (!VerifyPassword(password)) return;
+
+            _navigationService.NavigateTo("SherpanyValuesPageView");
         }
     }
 }
